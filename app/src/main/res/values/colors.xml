@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Colores base -->
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+
+    <!-- Paleta para Modo Claro -->
+    <color name="light_background">#FFFFFF</color>
+    <color name="light_primary">#F5F5F0</color>
+    <color name="light_secondary">#E8E6DF</color>
+    <color name="light_accent_soft">#D4E1F4</color>
+    <color name="light_accent">#B3D1FF</color>
+    <color name="light_interactive">#88B8FF</color>
+
+    <!-- Paleta para Modo Oscuro -->
+    <color name="dark_background">#121826</color>
+    <color name="dark_primary">#1E293B</color>
+    <color name="dark_secondary">#334155</color>
+    <color name="dark_accent_soft">#F0EAD6</color>
+    <color name="dark_accent">#FFE8C2</color>
+    <color name="dark_interactive">#2563EB</color>
+</resources>

@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">ParkingApp</string>
+    <string name="app_logo">Logo de la aplicación</string>
+    <string name="profile_icon">Icono de perfil</string>
+    <string name="parking_image">Imagen del estacionamiento</string>
+    <string name="default_web_client_id">191844627995-e22mhpian8vqvoc7dhtt5rfogvj6a8bs.apps.googleusercontent.com</string>
+
+</resources>
