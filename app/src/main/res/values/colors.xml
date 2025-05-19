@@ -19,4 +19,12 @@
     <color name="dark_accent_soft">#F0EAD6</color>
     <color name="dark_accent">#FFE8C2</color>
     <color name="dark_interactive">#2563EB</color>
+
+    <!-- Estados para los estacionamientos y reservas -->
+    <color name="status_available">#4CAF50</color>
+    <color name="status_occupied">#F44336</color>
+    <color name="status_reserved">#FF9800</color>
+    <color name="status_active">#2196F3</color>
+    <color name="status_completed">#4CAF50</color>
+    <color name="status_cancelled">#9E9E9E</color>
 </resources>

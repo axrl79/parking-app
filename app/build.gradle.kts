@@ -37,6 +37,10 @@ android {
 dependencies {
     implementation(libs.play.services.auth)
     implementation(libs.firebase.auth.v2231)
+    // Google Maps
+    implementation(libs.play.services.maps)
+    implementation (libs.play.services.location)
+
     implementation(platform(libs.firebase.bom))
     implementation(libs.appcompat)
     implementation(libs.material)
@@ -47,6 +51,7 @@ dependencies {
     implementation(libs.credentials)
     implementation(libs.credentials.play.services.auth)
     implementation(libs.googleid)
+    implementation(libs.firebase.database)
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)

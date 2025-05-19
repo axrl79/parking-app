@@ -3,8 +3,6 @@ package com.example45.parkingapp;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -20,6 +18,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.*;
+import com.google.firebase.database.*;
 
 public class login extends AppCompatActivity {
 
@@ -29,6 +28,7 @@ public class login extends AppCompatActivity {
     private MaterialButton btnLogin, btnGoogleLogin;
     private FirebaseAuth mAuth;
     private GoogleSignInClient mGoogleSignInClient;
+    private DatabaseReference usersRef;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,21 +44,22 @@ public class login extends AppCompatActivity {
 
         // Firebase
         mAuth = FirebaseAuth.getInstance();
+        usersRef = FirebaseDatabase.getInstance().getReference("users");
 
-        // Referencias UI
+        // UI
         etEmail = findViewById(R.id.etEmail);
         etPassword = findViewById(R.id.etPassword);
         btnLogin = findViewById(R.id.btnLogin);
         btnGoogleLogin = findViewById(R.id.btnGoogleLogin);
 
-        // Configuración Google Sign-In
+        // Google Sign-In
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestIdToken(getString(R.string.default_web_client_id)) // agrega este string desde Firebase config
+                .requestIdToken(getString(R.string.default_web_client_id))
                 .requestEmail()
                 .build();
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
 
-        // Inicio sesión por correo
+        // Login con correo
         btnLogin.setOnClickListener(v -> {
             String email = etEmail.getText().toString().trim();
             String password = etPassword.getText().toString().trim();
@@ -71,15 +72,17 @@ public class login extends AppCompatActivity {
             mAuth.signInWithEmailAndPassword(email, password)
                     .addOnCompleteListener(task -> {
                         if (task.isSuccessful()) {
-                            startActivity(new Intent(this, MainActivity.class));
-                            finish();
+                            FirebaseUser user = mAuth.getCurrentUser();
+                            if (user != null) {
+                                verificarRolYRedirigir(user.getUid());
+                            }
                         } else {
                             Toast.makeText(this, "Error: " + task.getException().getMessage(), Toast.LENGTH_LONG).show();
                         }
                     });
         });
 
-        // Inicio sesión con Google
+        // Login con Google
         btnGoogleLogin.setOnClickListener(v -> {
             Intent signInIntent = mGoogleSignInClient.getSignInIntent();
             startActivityForResult(signInIntent, RC_SIGN_IN);
@@ -106,11 +109,47 @@ public class login extends AppCompatActivity {
         mAuth.signInWithCredential(credential)
                 .addOnCompleteListener(this, task -> {
                     if (task.isSuccessful()) {
-                        startActivity(new Intent(this, MainActivity.class));
-                        finish();
+                        FirebaseUser user = mAuth.getCurrentUser();
+                        if (user != null) {
+                            verificarRolYRedirigir(user.getUid());
+                        }
                     } else {
                         Toast.makeText(this, "Autenticación con Google falló", Toast.LENGTH_SHORT).show();
                     }
                 });
+    }
+
+    private void verificarRolYRedirigir(String uid) {
+        usersRef.child(uid).get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                String rol = null;
+                if (task.getResult().exists()) {
+                    rol = task.getResult().child("rol").getValue(String.class);
+                }
+
+                if (rol == null) {
+                    rol = "Usuario"; // Default si no se encuentra rol
+                }
+
+                switch (rol) {
+                    case "Usuario":
+                        startActivity(new Intent(this, MainActivity.class));
+                        break;
+                    case "Administrador":
+                    case "Operador":
+                    case "Recepcionista":
+                        startActivity(new Intent(this, admin.class));
+                        break;
+                    default:
+                        Toast.makeText(this, "Rol no reconocido: " + rol, Toast.LENGTH_SHORT).show();
+                        return;
+                }
+
+                finish();
+
+            } else {
+                Toast.makeText(this, "Error al obtener el rol: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 }
